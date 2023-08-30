@@ -1,4 +1,4 @@
-use std::{io::{self, Write}, process};
+use std::{io::{self, BufRead}, process};
 
 const DEFAULT_PATH: &str = "yt-dlp"; 
 
@@ -21,17 +21,28 @@ impl TwitterDownloader {
     }
 
     pub fn download(&self, options: &TwitterVideoOptions) {
-        let cmd = process::Command::new("yt-dlp")
+        let mut cmd = process::Command::new("yt-dlp")
             .args([
                 format!("--{}", &options.log_level),
                 format!("--{}", &options.authentication),
-                format!("-o {}", &options.output_path),
+                "-o".to_owned(),
+                options.output_path.clone(),
                 options.url.clone()
             ])
-            .output()
-            .expect("Failed to download video");
+            .stdout(process::Stdio::piped())
+            .spawn()
+            .unwrap();
 
-        io::stdout().write_all(&cmd.stdout).unwrap();
-        io::stderr().write_all(&cmd.stderr).unwrap();
+        {
+            let stdout = cmd.stdout.as_mut().unwrap();
+            let stdout_reader = io::BufReader::new(stdout);
+            let stdout_lines = stdout_reader.lines();
+
+            for line in stdout_lines {
+                println!("Read: {:?}", line);
+            }
+        }
+
+        cmd.wait().unwrap();
     }
 }
