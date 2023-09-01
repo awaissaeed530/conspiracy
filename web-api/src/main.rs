@@ -3,19 +3,17 @@ mod s3;
 use std::fs;
 
 use aws_sdk_s3::{primitives::ByteStream, types::{CompletedPart, CompletedMultipartUpload}};
+use twitter_dl::{self, downloader::{TwitterDownloader, TwitterVideoOptions}};
 
 #[tokio::main]
 async fn main() -> Result<(), aws_sdk_s3::Error> {
-    /*
-    let options = twitter::TwitterVideoOptions {
+    let options = TwitterVideoOptions {
         url: "https://twitter.com/iluminatibot/status/1696770527237488863".to_owned(),
-        output_path: "video.mp4".to_owned(),
-        authentication: "cookies-from-browser=firefox".to_owned(),
-        log_level: "verbose".to_owned(),
+        output_path: Some("video.mp4".to_owned()),
+        cookies_browser: "firefox".to_owned(),
+        verbose: Some(true)
     };
-    let downloader = twitter::TwitterDownloader::new();
-    downloader.download(&options);
-    */
+    TwitterDownloader::new().download(&options);
 
     let contents = fs::read("video.mp4").unwrap();
 

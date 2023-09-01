@@ -1,7 +1,5 @@
 use clap::{Command, Arg, ArgAction, ArgMatches};
-use downloader::{TwitterVideoOptions, TwitterDownloader};
-
-mod downloader;
+use twitter_dl::downloader::{TwitterVideoOptions, TwitterDownloader};
 
 fn main() {
     let matches = Command::new("Twitter DL")

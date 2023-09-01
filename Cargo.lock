@@ -1726,6 +1726,7 @@ dependencies = [
  "aws-sdk-s3",
  "dotenvy",
  "tokio",
+ "twitter-dl",
 ]
 
 [[package]]
