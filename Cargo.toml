@@ -1,10 +1,6 @@
-[package]
-name = "conspiracy"
-version = "0.1.0"
-edition = "2021"
+[workspace]
 
-[dependencies]
-aws-config = "0.56"
-aws-sdk-s3 = "0.30"
-tokio = { version = "1.32", features = ["full"] }
-dotenvy = "0.15"
+members = [
+   "twitter-dl",
+   "web-api",
+]

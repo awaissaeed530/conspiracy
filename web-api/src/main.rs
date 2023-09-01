@@ -1,11 +1,8 @@
+mod s3;
+
 use std::fs;
 
 use aws_sdk_s3::{primitives::ByteStream, types::{CompletedPart, CompletedMultipartUpload}};
-
-use crate::{aws::s3, utils::twitter};
-
-mod utils;
-mod aws;
 
 #[tokio::main]
 async fn main() -> Result<(), aws_sdk_s3::Error> {
@@ -70,3 +67,4 @@ async fn main() -> Result<(), aws_sdk_s3::Error> {
 
     Ok(())
 }
+
