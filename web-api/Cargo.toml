@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 twitter-dl = { path = "../twitter-dl" }
-aws-config = "0.56"
-aws-sdk-s3 = "0.30"
+aws = { path = "../aws" }
 tokio = { version = "1.32", features = ["full"] }
 dotenvy = "0.15"
+uuid = { version = "1.4", features = [ "v4" ] }

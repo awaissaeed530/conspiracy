@@ -1,4 +1,4 @@
-use std::{io::{self, BufRead}, process};
+use futures_lite::{io, AsyncBufReadExt, StreamExt};
 
 const DEFAULT_PATH: &str = "yt-dlp"; 
 
@@ -27,27 +27,20 @@ impl TwitterDownloader {
         TwitterDownloader { }
     }
 
-    pub fn download(&self, options: &TwitterVideoOptions) {
+    pub async fn download(&self, options: &TwitterVideoOptions) {
         let mut cmd = self.build_command(&options)
-            .stdout(process::Stdio::piped())
+            .stdout(async_process::Stdio::piped())
             .spawn()
             .unwrap();
+        let mut lines = io::BufReader::new(cmd.stdout.take().unwrap()).lines();
 
-        {
-            let stdout = cmd.stdout.as_mut().unwrap();
-            let stdout_reader = io::BufReader::new(stdout);
-            let stdout_lines = stdout_reader.lines();
-
-            for line in stdout_lines {
-                println!("{:?}", line);
-            }
+        while let Some(line) = lines.next().await {
+            println!("{}", line.unwrap());
         }
-
-        cmd.wait().unwrap();
     }
 
-    fn build_command(&self, options: &TwitterVideoOptions) -> process::Command {
-        let mut cmd = process::Command::new(&DEFAULT_PATH);
+    fn build_command(&self, options: &TwitterVideoOptions) -> async_process::Command {
+        let mut cmd = async_process::Command::new(&DEFAULT_PATH);
 
         if let Some(verbose) = options.verbose {
             if verbose {
@@ -59,7 +52,6 @@ impl TwitterDownloader {
             cmd.arg("-o").arg(output_path);
         }
 
-        cmd.arg(format!("--cookies-from-browser={}", &options.cookies_browser));
         cmd.arg(format!("--cookies-from-browser={}", &options.cookies_browser));
         cmd.arg(options.url.clone());
         cmd 

@@ -3,4 +3,5 @@
 members = [
    "twitter-dl",
    "web-api",
+   "aws",
 ]
